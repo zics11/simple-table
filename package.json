@@ -1,0 +1,31 @@
+{
+  "name": "simple-table",
+  "version": "1.0.0",
+  "description": "A simple component library to simple table personalisable",
+  "main": "index.js",
+  "scripts": {
+    "clean": "rm -rf dist",
+    "build": "yarn clean && tsc && cp package.json README.md ./dist"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/zics11/simple-table.git"
+  },
+  "keywords": [
+    "react"
+  ],
+  "author": {
+    "name": "Julien Bergé"
+  },
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/zics11/simple-table/issues"
+  },
+  "homepage": "https://github.com/zics11/simple-table#readme",
+  "devDependencies": {
+    "@types/react": "^18.2.43",
+    "@types/react-dom": "^18.2.17",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  }
+}
