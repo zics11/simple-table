@@ -13,7 +13,7 @@ const Input = styled.input`
   border-radius: 10px;
   margin-bottom: 20px;
   font-size: larger;
-  color: ${({ color }) => color};
+  color: black;
   border: ${props => props.border};
 `;
 
@@ -131,9 +131,9 @@ const Table = ({ rowsPerPage, datas, headers, apparenceColor }) => {
     let g = parseInt(color.slice(3, 5), 16);
     let b = parseInt(color.slice(5, 7), 16);
 
-    r = Math.round(r * 0.6);
-    g = Math.round(g * 0.6);
-    b = Math.round(b * 0.6);
+    r = Math.round(r * 0.4);
+    g = Math.round(g * 0.4);
+    b = Math.round(b * 0.4);
 
     const darkColor = `#${r.toString(16).padStart(2, '0')}${g.toString(16).padStart(2, '0')}${b.toString(16).padStart(2, '0')}`;
 
@@ -204,7 +204,6 @@ const Table = ({ rowsPerPage, datas, headers, apparenceColor }) => {
         placeholder="Rechercher..."
         value={searchTerm}
         onChange={(e) => setSearchTerm(e.target.value)}
-        color={darkenColor(apparenceColor)}
         border={`1px solid ${darkenColor(apparenceColor)}`}
         />
       {/* Tableau des données */}
