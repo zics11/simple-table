@@ -72,18 +72,38 @@ const NoDataMessage = styled.div`
   padding: 20px;
 `;
 
+/**
+ * Composant de tableau pour afficher les données des employés.
+ * @component
+ * @param {Object} props - Les props du composant.
+ * @param {number} props.rowsPerPage - Le nombre de lignes par page.
+ * @param {Array.<Object>} props.datas - Les données des employés à afficher.
+ * @param {Array.<Object>} props.headers - Les en-têtes du tableau.
+ * @param {string} props.apparenceColor - La couleur d'apparence du tableau.
+ * @returns {JSX.Element} Composant de tableau pour afficher les données des employés.
+ */
 const Table = ({ rowsPerPage, datas, headers, apparenceColor }) => {
+  // État pour gérer la page actuelle
   const [currentPage, setCurrentPage] = useState(1);
+  // État pour gérer la colonne de tri
   const [sortColumn, setSortColumn] = useState(null);
+  // État pour gérer la direction de tri
   const [sortDirection, setSortDirection] = useState('asc');
+  // État pour gérer le terme de recherche
   const [searchTerm, setSearchTerm] = useState('');
 
+  // Effet pour mettre à jour la page actuelle si les données changent
   useEffect(() => {
     if (datas.length === 0) {
       setCurrentPage(0);
     }
   }, [datas]);
 
+  /**
+   * Fonction pour trier les données.
+   * @param {Array.<Object>} data - Les données à trier.
+   * @returns {Array.<Object>} Les données triées.
+   */
   const sortData = (data) => {
     if (!sortColumn) return data;
 
@@ -101,6 +121,11 @@ const Table = ({ rowsPerPage, datas, headers, apparenceColor }) => {
     });
   };
 
+  /**
+  * Fonction pour assombrir une couleur.
+  * @param {string} color - La couleur à assombrir au format hexadécimal.
+  * @returns {string} La couleur assombrie au format hexadécimal.
+  */
   const darkenColor = (color) => {
     let r = parseInt(color.slice(1, 3), 16);
     let g = parseInt(color.slice(3, 5), 16);
@@ -115,6 +140,11 @@ const Table = ({ rowsPerPage, datas, headers, apparenceColor }) => {
     return darkColor;
   };
 
+  /**
+   * Fonction pour gérer le tri des colonnes.
+   * @param {string} column - Le nom de la colonne à trier.
+   * @returns {void}
+  */
   const handleSort = (column) => {
     if (column === sortColumn) {
       setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
@@ -124,6 +154,11 @@ const Table = ({ rowsPerPage, datas, headers, apparenceColor }) => {
     }
   };
 
+  /**
+  * Fonction pour rendre l'icône de tri.
+  * @param {string} column - Le nom de la colonne.
+  * @returns {string|null} L'icône de tri ou null si la colonne n'est pas triée.
+  */
   const renderSortIcon = (column) => {
     if (column !== sortColumn) {
       return null;
@@ -131,6 +166,11 @@ const Table = ({ rowsPerPage, datas, headers, apparenceColor }) => {
     return sortDirection === 'asc' ? ' ▲' : ' ▼';
   };
 
+  /**
+  * Fonction pour filtrer les données en fonction du terme de recherche.
+  * @param {Array.<Object>} data - Les données à filtrer.
+  * @returns {Array.<Object>} Les données filtrées.
+  */
   const getFilteredData = (data) => {
     if (!searchTerm) return data;
     return data.filter((item) =>
@@ -143,15 +183,22 @@ const Table = ({ rowsPerPage, datas, headers, apparenceColor }) => {
     );
   };
 
+  // Récupération des données filtrées
   const filteredDatas = getFilteredData(datas);
+  // Tri des données filtrées
   const sortedDatas = sortData(filteredDatas);
+  // Calcul de l'index de la dernière ligne sur la page actuelle
   const indexOfLastRow = currentPage * rowsPerPage;
+  // Calcul de l'index de la première ligne sur la page actuelle
   const indexOfFirstRow = indexOfLastRow - rowsPerPage;
+  // Récupération des lignes actuelles à afficher
   const currentRows = sortedDatas.slice(indexOfFirstRow, indexOfLastRow);
+  // Calcul du nombre total de pages
   const totalPages = Math.ceil(filteredDatas.length / rowsPerPage);
 
   return (
     <EmployeeTableContainer>
+      {/* Champ de recherche */}
       <Input
         type="text"
         placeholder="Rechercher..."
@@ -160,6 +207,7 @@ const Table = ({ rowsPerPage, datas, headers, apparenceColor }) => {
         color={darkenColor(apparenceColor)}
         border={`1px solid ${darkenColor(apparenceColor)}`}
         />
+      {/* Tableau des données */}
       <StyledTable color={darkenColor(apparenceColor)}>
         <thead>
           <tr>
@@ -195,6 +243,7 @@ const Table = ({ rowsPerPage, datas, headers, apparenceColor }) => {
         </tbody>
       </StyledTable>
 
+      {/* Pagination */}
       <PagesContainer>
         <StyledButton
           backgroundcolor={apparenceColor}
@@ -220,6 +269,7 @@ const Table = ({ rowsPerPage, datas, headers, apparenceColor }) => {
   );
 };
 
+// Spécification des types de props
 Table.propTypes = {
   rowsPerPage: PropTypes.number.isRequired,
   datas: PropTypes.arrayOf(PropTypes.object).isRequired,
