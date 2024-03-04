@@ -25,7 +25,7 @@ yarn add simple-table
 
 import React from 'react';
 import ReactDOM from 'react-dom';
-import Table from 'my-simple-table';
+import { Table } from 'my-simple-table'
 
   const headers = [
     { key: 'firstName', name: 'First name' },
