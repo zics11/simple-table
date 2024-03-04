@@ -1,6 +1,6 @@
 {
   "name": "my-simple-table",
-  "version": "1.1.24",
+  "version": "1.1.25",
   "description": "A simple component library to simple table personalisable",
   "module": "index.mjs",
   "browser": "index.umd.js",
