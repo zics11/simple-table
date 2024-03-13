@@ -2,17 +2,20 @@ import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 
+
 const EmployeeTableContainer = styled.div`
   width: 94.5%;
+  display: flex;
+  flex-direction: column;
 `;
 
 const Input = styled.input`
-  padding: 10px;
+  padding: 9.5px;
   width: 200px;
   border: none;
   border-radius: 10px;
   margin-bottom: 20px;
-  font-size: larger;
+  font-size: 1em;
   color: black;
   border: ${props => props.border};
 `;
@@ -44,8 +47,15 @@ const TableCell = styled.td`
   text-align: left;
 `;
 
-const PagesContainer = styled.div`
+const Footer = styled.div`
   margin-top: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+`;
+
+const PagesContainer = styled.div`
   display: flex;
   align-items: center;
   gap: 20px;
@@ -67,6 +77,28 @@ const StyledButton = styled.button`
   }
 `;
 
+const ShowEntries = styled.div`
+  padding: 0.5em;
+  width: 170px;
+  border: none;
+  border-radius: 10px;
+  
+  font-size: 1em;
+  color: #000000;
+  background-color: ${({ backgroundcolor }) => backgroundcolor};
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+`;
+
+const Select = styled.select`
+  width: 45px;
+  border: none;
+  border-radius: 10px;
+  color: black;
+  text-align: center;
+`;
+
 const NoDataMessage = styled.div`
   text-align: center;
   padding: 20px;
@@ -76,13 +108,12 @@ const NoDataMessage = styled.div`
  * Composant de tableau pour afficher les données des employés.
  * @component
  * @param {Object} props - Les props du composant.
- * @param {number} props.rowsPerPage - Le nombre de lignes par page.
  * @param {Array.<Object>} props.datas - Les données des employés à afficher.
  * @param {Array.<Object>} props.headers - Les en-têtes du tableau.
  * @param {string} props.apparenceColor - La couleur d'apparence du tableau.
  * @returns {JSX.Element} Composant de tableau pour afficher les données des employés.
  */
-const Table = ({ rowsPerPage, datas, headers, apparenceColor }) => {
+const Table = ({ datas, headers, apparenceColor }) => {
   // État pour gérer la page actuelle
   const [currentPage, setCurrentPage] = useState(1);
   // État pour gérer la colonne de tri
@@ -91,13 +122,14 @@ const Table = ({ rowsPerPage, datas, headers, apparenceColor }) => {
   const [sortDirection, setSortDirection] = useState('asc');
   // État pour gérer le terme de recherche
   const [searchTerm, setSearchTerm] = useState('');
+  const [rowsPerPage, setRowsPerPage] = useState(10);
 
   // Effet pour mettre à jour la page actuelle si les données changent
   useEffect(() => {
     if (datas.length === 0) {
       setCurrentPage(0);
     }
-  }, [datas]);
+  }, [datas],rowsPerPage);
 
   /**
    * Fonction pour trier les données.
@@ -199,13 +231,14 @@ const Table = ({ rowsPerPage, datas, headers, apparenceColor }) => {
   return (
     <EmployeeTableContainer>
       {/* Champ de recherche */}
+
       <Input
         type="text"
         placeholder="Rechercher..."
         value={searchTerm}
         onChange={(e) => setSearchTerm(e.target.value)}
         border={`1px solid ${darkenColor(apparenceColor)}`}
-        />
+      />
       {/* Tableau des données */}
       <StyledTable color={darkenColor(apparenceColor)}>
         <thead>
@@ -243,34 +276,46 @@ const Table = ({ rowsPerPage, datas, headers, apparenceColor }) => {
       </StyledTable>
 
       {/* Pagination */}
-      <PagesContainer>
-        <StyledButton
-          backgroundcolor={apparenceColor}
-          color={darkenColor(apparenceColor)}
-          onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
-          disabled={currentPage === 1 || filteredDatas.length === 0}
-        >
-          Précédent
-        </StyledButton>
-        <span>
-          Page {currentPage} sur {totalPages}
-        </span>
-        <StyledButton
-          backgroundcolor={apparenceColor}
-          color={darkenColor(apparenceColor)}
-          onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
-          disabled={currentPage === totalPages || totalPages === 0}
-        >
-          Suivant
-        </StyledButton>
-      </PagesContainer>
+      <Footer>
+        <PagesContainer>
+          <StyledButton
+            backgroundcolor={apparenceColor}
+            color={darkenColor(apparenceColor)}
+            onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+            disabled={currentPage === 1 || filteredDatas.length === 0}
+          >
+            Précédent
+          </StyledButton>
+          <span>
+            Page {currentPage} sur {totalPages}
+          </span>
+          <StyledButton
+            backgroundcolor={apparenceColor}
+            color={darkenColor(apparenceColor)}
+            onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+            disabled={currentPage === totalPages || totalPages === 0}
+          >
+            Suivant
+          </StyledButton>
+        </PagesContainer>
+        <ShowEntries backgroundcolor={apparenceColor}>
+          Show
+          <Select onChange={(e) => setRowsPerPage(e.target.value)} border={`1px solid ${darkenColor(apparenceColor)}`}>
+            type="text"
+            <option value="10">10</option>
+            <option value="20">25</option>
+            <option value="50">50</option>
+            <option value="100">100</option>
+          </Select>
+          entries
+        </ShowEntries>
+      </Footer>
     </EmployeeTableContainer>
   );
 };
 
 // Spécification des types de props
 Table.propTypes = {
-  rowsPerPage: PropTypes.number.isRequired,
   datas: PropTypes.arrayOf(PropTypes.object).isRequired,
   headers: PropTypes.arrayOf(
     PropTypes.shape({
